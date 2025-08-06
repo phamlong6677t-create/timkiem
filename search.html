@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm Kiếm Game</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --danger: #f72585;
+            --success: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --bg-color: #f5f7fa;
+            --text-color: #212529;
+            --card-bg: white;
+        }
+
+        .dark-mode {
+            --bg-color: #121212;
+            --text-color: #f8f9fa;
+            --card-bg: #1e1e1e;
+            --light: #2d2d2d;
+            --gray: #a0a0a0;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-color);
+            min-height: 100vh;
+            padding: 2rem;
+            color: var(--text-color);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .search-container {
+            padding: 2rem;
+        }
+        
+        .search-box {
+            display: flex;
+            margin-bottom: 2rem;
+        }
+        
+        .search-input {
+            flex-grow: 1;
+            padding: 1rem;
+            border: 2px solid var(--light);
+            border-radius: 8px 0 0 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+        
+        .search-input:focus {
+            border-color: var(--accent);
+        }
+        
+        .search-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0 1.5rem;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .search-btn:hover {
+            background-color: var(--secondary);
+        }
+        
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .game-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid var(--light);
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .game-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        
+        .game-body {
+            padding: 1rem;
+        }
+        
+        .game-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+        
+        .game-link {
+            display: block;
+            color: var(--primary);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray);
+        }
+        
+        .back-btn {
+            display: inline-block;
+            margin-top: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+        
+        .settings-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .settings-btn:hover {
+            background-color: var(--secondary);
+            transform: scale(1.1);
+        }
+        
+        @media (max-width: 768px) {
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Tìm Kiếm Game</h1>
+            <p>Tìm kiếm game trong bộ sưu tập của chúng tôi</p>
+        </header>
+        
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="searchInput" class="search-input" placeholder="Nhập tên game để tìm kiếm...">
+                <button class="search-btn" id="searchBtn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            
+            <div class="games-grid" id="searchResults">
+                <!-- Kết quả tìm kiếm sẽ hiển thị ở đây -->
+            </div>
+            
+            <div id="noResults" class="no-results" style="display: none;">
+                <p>Không tìm thấy game phù hợp</p>
+                <a href="index.html" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Quay lại trang chủ
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <a href="settings.html" class="settings-btn">
+        <i class="fas fa-cog"></i>
+    </a>
+
+    <script>
+        // Kiểm tra chế độ tối từ localStorage
+        function checkDarkMode() {
+            const darkMode = localStorage.getItem('darkMode') === 'true';
+            document.body.classList.toggle('dark-mode', darkMode);
+            return darkMode;
+        }
+        
+        // Lắng nghe thay đổi chế độ tối từ các tab khác
+        if (typeof BroadcastChannel !== 'undefined') {
+            const channel = new BroadcastChannel('darkModeChannel');
+            channel.addEventListener('message', (event) => {
+                if (event.data && typeof event.data.darkMode !== 'undefined') {
+                    document.body.classList.toggle('dark-mode', event.data.darkMode);
+                }
+            });
+        }
+        
+        // Hàm tìm kiếm game
+        async function searchGames(keyword) {
+            try {
+                const response = await fetch('game.json');
+                if (!response.ok) throw new Error("Không tải được game.json");
+                const games = await response.json();
+                return games.filter(game => 
+                    game.name.toLowerCase().includes(keyword.toLowerCase())
+                );
+            } catch (error) {
+                console.error("Search Error:", error);
+                return [];
+            }
+        }
+        
+        // Hiển thị kết quả tìm kiếm
+        function displaySearchResults(results) {
+            const resultsContainer = document.getElementById('searchResults');
+            const noResults = document.getElementById('noResults');
+            
+            resultsContainer.innerHTML = '';
+            
+            if (results.length === 0) {
+                noResults.style.display = 'block';
+                return;
+            }
+            
+            noResults.style.display = 'none';
+            
+            results.forEach(game => {
+                const gameCard = document.createElement('div');
+                gameCard.className = 'game-card';
+                gameCard.innerHTML = `
+                    <img src="${game.image}" alt="${game.name}" class="game-image">
+                    <div class="game-body">
+                        <h3 class="game-title">${game.name}</h3>
+                        <a href="${game.link}" target="_blank" class="game-link">Chơi ngay</a>
+                    </div>
+                `;
+                
+                resultsContainer.appendChild(gameCard);
+            });
+        }
+        
+        // Xử lý sự kiện tìm kiếm
+        document.getElementById('searchBtn').addEventListener('click', function() {
+            const keyword = document.getElementById('searchInput').value;
+            searchGames(keyword).then(displaySearchResults);
+        });
+        
+        // Tìm kiếm khi nhấn Enter
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                const keyword = document.getElementById('searchInput').value;
+                searchGames(keyword).then(displaySearchResults);
+            }
+        });
+        
+        // Tự động tìm kiếm khi trang được tải (nếu có tham số tìm kiếm trong URL)
+        window.addEventListener('load', function() {
+            checkDarkMode();
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchQuery = urlParams.get('q');
+            
+            if (searchQuery) {
+                document.getElementById('searchInput').value = searchQuery;
+                searchGames(searchQuery).then(displaySearchResults);
+            }
+        });
+    </script>
+</body>
+</html>
